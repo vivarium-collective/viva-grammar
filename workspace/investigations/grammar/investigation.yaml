@@ -39,9 +39,11 @@ executive:
     through abstract signal/behavior ports.
   decisions_needed:
   - >-
-    Stage 2: confirm the blueprint composite's effective step duration (per-step vs
-    per-time rate convention) before the numeric parity run of BlueprintGrammarProcess
-    against RulesProcess.
+    Stage 2 target: wire BlueprintGrammarProcess into a GRAMMAR-SHAPED blueprint study
+    (confirmed with the MISM-blueprint session that per_step gives exact RulesProcess
+    parity and the grammar replaces — not coexists with — the single rules slot). The
+    grammar cannot reproduce the Sego flu model, which relies on ordered/resistance
+    chaining; see docs/stage2-blueprint-integration.md.
 scientific_argument:
   main_claim: >-
     The cell-behavior hypothesis grammar can be realized as a generic rule engine
@@ -67,6 +69,10 @@ scientific_argument:
     cell cohort animation with the induction / plume / reversion dynamics.
   caveats:
   - Stage-2 blueprint integration is scaffolded but not yet wired into the live ABMs.
+  - >-
+    The grammar swap will NOT reproduce the Sego influenza blueprint, which relies on
+    RulesProcess's ordered rules + resistance-scalar chaining; it is a drop-in only for
+    grammar-shaped blueprints. (Confirmed against blueprint source, 2026-11-06.)
 acceptance_criteria:
 - study: hypoxia-motility
   behavior: phenotype-induction
