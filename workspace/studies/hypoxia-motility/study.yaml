@@ -1,0 +1,109 @@
+schema_version: 4
+name: hypoxia-motility
+title: Hypoxia → motility (grammar on a reference substrate)
+created: '2026-11-06'
+status: complete
+phase: Decide
+question: >-
+  Does the generic grammar engine, driven by the paper's verbatim hypoxia rules,
+  reproduce the transient post-hypoxic motile phenotype on a minimal reference ABM?
+hypothesis: >-
+  Executing the PhysiCell hypoxia rules (oxygen decreases transform-to-motile and
+  necrosis; pressure decreases cycling) through viva_grammar on an oxygen-field +
+  point-agent substrate yields a hypoxic core that induces a migratory phenotype,
+  an invasive plume, a central necrotic core, and reversion on reoxygenation.
+objective: >-
+  Demonstrate end-to-end that viva_grammar.composites.hypoxia.hypoxia_motility
+  reproduces the paper's qualitative hypoxia dynamics, with the grammar engine as a
+  separate, pluggable process (the same role it will play for the MISM blueprint ABMs).
+description: >-
+  The showcase study for viva-grammar. The generic GrammarRulesProcess reads the
+  verbatim hypoxia rules and drives the minimal reference substrate. Oxygen is
+  depleted into a central hypoxic core; core cells transition to a motile phenotype
+  (baseline speed 0.47 µm/min) and migrate up the oxygen gradient; the deepest core
+  goes necrotic; late reoxygenation (uptake relief) reverts the motile cells.
+baseline:
+- name: baseline
+  composite: viva_grammar.composites.hypoxia.hypoxia_motility
+  params:
+    n_cells: 350
+    seed_radius: 130.0
+    interval: 30.0
+    uptake: 1.0
+    reoxygenation_time: 3000.0
+    seed: 0
+variants: []
+expected_behavior:
+- name: phenotype-induction
+  en: Low oxygen induces a motile phenotype — peak motile-cell fraction reaches at least 0.15.
+  observable: motile_fraction
+  condition: hypoxic core present
+  rationale: >-
+    "oxygen decreases transform to motile tumor": as the core becomes hypoxic the
+    transition rate rises, producing motile cells (baseline fraction is exactly 0).
+  measure: {kind: derived_scalar, field: peak_motile_fraction}
+  expect: {op: '>=', value: 0.15}
+- name: invasive-plume
+  en: Motile cells migrate outward — at the motile peak their mean radius is ≥ 1.2× the non-motile mean.
+  observable: radial_distribution
+  condition: at motile peak
+  rationale: Motile cells do a biased walk up the oxygen gradient, forming an invasive plume.
+  measure: {kind: derived_scalar, field: plume_ratio_at_peak}
+  expect: {op: '>=', value: 1.2}
+- name: transience-reversion
+  en: On reoxygenation the phenotype reverts — motile fraction falls to ≤ 0.02.
+  observable: motile_fraction
+  condition: after reoxygenation
+  rationale: '"oxygen increases transform to tumor": restored oxygen reverts motile cells.'
+  measure: {kind: derived_scalar, field: final_motile_fraction}
+  expect: {op: <=, value: 0.02}
+- name: necrotic-core
+  en: Necrosis is confined to the core — mean necrotic radius stays below the mean live radius.
+  observable: radial_distribution
+  condition: whenever a necrotic core exists
+  rationale: '"oxygen decreases necrosis": only the anoxic center necroses.'
+  measure: {kind: derived_scalar, field: necrotic_core_central}
+  expect: {op: '==', value: 1}
+behavior_tests:
+- name: phenotype-induction
+  classification: primary
+  description: Peak motile-cell fraction ≥ 0.15 during hypoxia (observed ≈ 0.34).
+  measure: {kind: derived_scalar, field: peak_motile_fraction}
+  pass_if: {op: '>=', value: 0.15}
+  requires_simulation: baseline
+- name: invasive-plume
+  classification: primary
+  description: Mean motile radius ≥ 1.2× mean non-motile radius at the motile peak (observed ≈ 1.40×).
+  measure: {kind: derived_scalar, field: plume_ratio_at_peak}
+  pass_if: {op: '>=', value: 1.2}
+  requires_simulation: baseline
+- name: transience-reversion
+  classification: primary
+  description: Motile fraction ≤ 0.02 after reoxygenation (observed → 0.00).
+  measure: {kind: derived_scalar, field: final_motile_fraction}
+  pass_if: {op: <=, value: 0.02}
+  requires_simulation: baseline
+- name: necrotic-core
+  classification: secondary
+  description: Mean necrotic radius < mean live radius throughout (central core).
+  measure: {kind: derived_scalar, field: necrotic_core_central}
+  pass_if: {op: '==', value: 1}
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites: []
+  enables: []
+canonical_runs:
+- name: default
+  script: workspace/studies/hypoxia-motility/sims/run.py
+  args: []
+  label: hypoxia-motility
+  default: true
+visualizations:
+- name: hypoxia-motility-spatial-dynamics
+  path: workspace/studies/hypoxia-motility/viz/hypoxia_motility.html
+  title: Oxygen field, cell cohort, and dynamics over time
+conclusion: >-
+  PASS on all four acceptance bands. The grammar engine reproduces the paper's
+  transient post-hypoxic migration: peak motile fraction ≈ 0.34, invasive-plume
+  ratio ≈ 1.40×, reversion to 0.00 after reoxygenation, and a central necrotic
+  core throughout — with the grammar running as a separate, ABM-agnostic process.

@@ -1,0 +1,78 @@
+schema_version: 2
+name: grammar
+title: A human-interpretable grammar as a pluggable rule engine
+created: '2026-11-06'
+status: running
+question: >-
+  Can the Macklin/PhysiCell cell-behavior hypothesis grammar be implemented as a
+  generic, ABM-agnostic process that reproduces published multicellular dynamics
+  and plugs into different agent-based models unchanged?
+hypothesis: >-
+  A clean-room engine that compiles the grammar's rules to the paper's Hill-function
+  mathematics, reading abstract per-cell signals and emitting abstract behaviors,
+  can both (a) reproduce the paper's hypoxia → motility model on a minimal reference
+  substrate and (b) drop into the MISM blueprint's MechanicsBackend in place of its
+  built-in RulesProcess.
+description: >-
+  viva-grammar reimplements the cell-behavior hypothesis grammar (Johnson, Bergman,
+  …, Fertig & Macklin, Cell 2025) as a process-bigraph module. The engine is
+  ABM-agnostic; host coupling lives in thin adapters. This investigation's first
+  study proves the engine on the paper's own hypoxia example; a follow-on will wire
+  the blueprint adapter into viva-multicell-blueprint's CPM / vertex / center-based
+  ABMs.
+studies:
+- hypoxia-motility
+executive:
+  what_is_this: >-
+    A reusable implementation of a plain-text language for cell behavior. You write
+    rules like "In tumor cells, oxygen decreases transformation to motile tumor,"
+    and the engine turns per-cell signals into per-cell behaviors each timestep —
+    independent of which agent-based model provides the cells.
+  verdict: >-
+    The grammar engine reproduces the paper's transient post-hypoxic migration
+    end-to-end on a minimal reference substrate, with all four acceptance bands met.
+  verdict_status: supported
+  verdict_detail: >-
+    Study hypoxia-motility: peak motile fraction ≈ 0.34 (≥ 0.15), invasive-plume
+    ratio ≈ 1.40× (≥ 1.2), reversion to 0.00 after reoxygenation (≤ 0.02), central
+    necrotic core throughout. The engine ran as a separate process wired only
+    through abstract signal/behavior ports.
+  decisions_needed:
+  - >-
+    Stage 2: confirm the blueprint composite's effective step duration (per-step vs
+    per-time rate convention) before the numeric parity run of BlueprintGrammarProcess
+    against RulesProcess.
+scientific_argument:
+  main_claim: >-
+    The cell-behavior hypothesis grammar can be realized as a generic rule engine
+    that reproduces published dynamics and is portable across agent-based models.
+  evidence_for:
+  - The hypoxia study reproduces the paper's qualitative dynamics on all four bands.
+  - >-
+    The engine math matches hand-computed Hill values and the verbatim hypoxia rule
+    parameters (29 passing tests).
+  - >-
+    BlueprintGrammarProcess emits exactly the blueprint RulesProcess port surface
+    (fates / scalar / divisions / deaths), so it is a structural drop-in.
+  evidence_against:
+  - >-
+    The reference substrate is a toy (reduced oxygen diffusivity); it demonstrates
+    the grammar, not quantitative tumor biology.
+  - >-
+    The grammar combines rules independently per (cell_type, behavior) — no rule
+    ordering or scalar-chaining — so it cannot express ordered/resistance rule chains.
+  key_figures:
+  - >-
+    workspace/studies/hypoxia-motility/viz/hypoxia_motility.html — oxygen field +
+    cell cohort animation with the induction / plume / reversion dynamics.
+  caveats:
+  - Stage-2 blueprint integration is scaffolded but not yet wired into the live ABMs.
+acceptance_criteria:
+- study: hypoxia-motility
+  behavior: phenotype-induction
+- study: hypoxia-motility
+  behavior: invasive-plume
+- study: hypoxia-motility
+  behavior: transience-reversion
+- study: hypoxia-motility
+  behavior: necrotic-core

@@ -13,7 +13,16 @@ import uuid
 from pathlib import Path
 
 STUDY_DIR = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = STUDY_DIR.parents[1]
+
+
+def _find_workspace_root(start: Path) -> Path:
+    for p in [start, *start.parents]:
+        if (p / "workspace.yaml").exists():
+            return p
+    return start.parents[1]
+
+
+WORKSPACE_ROOT = _find_workspace_root(STUDY_DIR)
 
 import sys
 sys.path.insert(0, str(WORKSPACE_ROOT))
