@@ -16,7 +16,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 dependencies = [
-    "bigraph-schema>=1.8.1",
+    "bigraph-schema>=1.8.1,<1.8.4",  # <1.8.4: upstream removed the `matching` submodule holes.py needs
     "process-bigraph>=1.8.5",
     "numpy>=1.24",
     "pyyaml>=6.0",
