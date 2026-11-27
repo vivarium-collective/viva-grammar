@@ -27,16 +27,6 @@ dev = [
     "pytest>=7.0",
     "plotly>=5.20",
     "pandas>=2.0",
-    # workspace lint (scripts/lint-workspace.py) validates workspace.yaml/study.yaml
-    "jsonschema>=4.0",
-    "jinja2>=3.0",
-]
-dashboard = [
-    "bigraph-viz>=2.0.3",
-    "vivarium-workbench",
-    "pyyaml",
-    "jsonschema",
-    "jinja2",
 ]
 
 [project.urls]
@@ -49,6 +39,3 @@ packages = ["viva_grammar"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = ["slow: end-to-end phenotype run"]
-
-[tool.uv.sources]
-vivarium-workbench = { git = "https://github.com/vivarium-collective/vivarium-workbench.git", branch = "main" }
