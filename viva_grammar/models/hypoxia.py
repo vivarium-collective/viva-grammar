@@ -1,6 +1,6 @@
 """The paper's hypoxia -> motility model, as reusable grammar objects.
 
-Bundles the verbatim PhysiCell hypoxia rules (``references/physicell_hypoxia_cell_rules.csv``)
+Bundles the verbatim PhysiCell hypoxia rules (``viva_grammar/data/physicell_hypoxia_cell_rules.csv``)
 with the cell-definition baselines extracted from that model's
 ``PhysiCell_settings.xml`` (see ``references/PROVENANCE.md``).  Both the
 standalone reference study and the blueprint adapter import these.
@@ -22,7 +22,7 @@ from ..io import load_rules_csv
 __all__ = ["hypoxia_rules", "hypoxia_cell_definitions", "hypoxia_ruleset", "HYPOXIA_RULES_CSV"]
 
 HYPOXIA_RULES_CSV = (
-    Path(__file__).resolve().parents[2] / "references" / "physicell_hypoxia_cell_rules.csv"
+    Path(__file__).resolve().parent.parent / "data" / "physicell_hypoxia_cell_rules.csv"
 )
 
 

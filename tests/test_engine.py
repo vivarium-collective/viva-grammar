@@ -1,10 +1,9 @@
 """Unit tests for the grammar engine — the math is checked against hand values
-and against the paper's hypoxia rules (``references/physicell_hypoxia_cell_rules.csv``).
+and against the paper's hypoxia rules (``viva_grammar/data/physicell_hypoxia_cell_rules.csv``).
 """
 from __future__ import annotations
 
 import math
-from pathlib import Path
 
 import pytest
 
@@ -21,8 +20,10 @@ from viva_grammar.engine import (
     step_response,
 )
 from viva_grammar.io import load_rules_csv, parse_rules_csv, parse_statement, rules_to_csv
+from viva_grammar.models.hypoxia import HYPOXIA_RULES_CSV
 
-REFCSV = Path(__file__).resolve().parents[1] / "references" / "physicell_hypoxia_cell_rules.csv"
+# The hypoxia rules CSV now ships inside the installed package (viva_grammar/data/).
+REFCSV = HYPOXIA_RULES_CSV
 
 
 # ---------------------------------------------------------------- response math

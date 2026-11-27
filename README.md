@@ -1,7 +1,10 @@
 # viva-grammar
 
-<!-- BEGIN:dashboard -->
-<!-- END:dashboard -->
+**viva-grammar is a pure engine/simulator package** — the `viva_grammar`
+cell-behavior-grammar process and its reusable model objects, installable as a
+dependency. Its studies, investigations, and dashboard have moved to the
+[`viva-showcase`](https://github.com/vivarium-collective/viva-showcase) workspace,
+which pins this package as its grammar engine.
 
 A generic, **ABM-agnostic** implementation of the *cell-behavior hypothesis
 grammar* — the plain-text modeling language of Johnson, Bergman, …, Fertig &
@@ -52,8 +55,8 @@ pytest
 ```
 
 Once installed, the processes register automatically via
-`bigraph_schema.package.discover`; the workspace's `build_core()` also registers
-them explicitly for pixi/uv-build editable installs.
+`bigraph_schema.package.discover`, so a consuming workspace (e.g. `viva-showcase`)
+can resolve `viva_grammar`'s Steps/Processes by type name.
 
 ## Quick start
 
@@ -69,12 +72,18 @@ print(ev.evaluate(SignalContext("tumor", fields={"oxygen": 0.0}))["necrosis"].va
 print(ev.evaluate(SignalContext("tumor", fields={"oxygen": 100.0}))["necrosis"].value) # ~0
 ```
 
-Run the showcase study (reference substrate + grammar):
+Build the paper's hypoxia → motility model (reference substrate + grammar) as a
+process-bigraph composite straight from the package:
 
-```bash
-python studies/hypoxia-motility/sims/run.py
-# -> studies/hypoxia-motility/viz/hypoxia_motility.html (interactive)
+```python
+from viva_grammar.composites import hypoxia_motility
+
+composite = hypoxia_motility()  # ready-to-run Composite
 ```
+
+The full study that runs this composite end to end (with its reports and
+dashboard) lives in the [`viva-showcase`](https://github.com/vivarium-collective/viva-showcase)
+workspace.
 
 ## Showcase: hypoxia → motility
 
